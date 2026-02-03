@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.routes import health
+from src.routes import health, telegram
 
 app = FastAPI(
     title="AI Agents API",
@@ -9,3 +9,4 @@ app = FastAPI(
 
 # Include routers
 app.include_router(health.router, tags=["health"])
+app.include_router(telegram.router, tags=["telegram"])
