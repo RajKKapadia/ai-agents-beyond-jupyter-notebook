@@ -2,9 +2,11 @@ from typing import Optional
 
 from fastapi import APIRouter, Request, HTTPException, Header
 import httpx
+from agents import Runner
 
 from src.config import TELEGRAM_BOT_TOKEN, TELEGRAM_X_SECRET_KEY
 from src.utils.telegram import send_message, extract_chat_id_from_update, extract_message_text_from_update
+from src.agents.main_agent import agent
 
 router = APIRouter(
     prefix="/telegram",
@@ -39,7 +41,9 @@ async def receive_webhook(
         user_message = extract_message_text_from_update(update)
         
         if chat_id:
-            response_text = f"✅ Received your message: {user_message}\n\nWebhook is working correctly!"
+
+            result = await Runner.run(agent, user_message)
+            response_text = result.final_output
             await send_message(chat_id, response_text)
                 
     except Exception as e:

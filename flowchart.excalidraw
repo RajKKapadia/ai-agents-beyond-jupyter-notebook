@@ -43,8 +43,8 @@
     {
       "id": "wfYGfuXqv4h-6rQb10ZWC",
       "type": "text",
-      "x": 1333.6264740085073,
-      "y": 11165.240296671525,
+      "x": 1130.2931406751738,
+      "y": 11601.906963338193,
       "width": 599.3282470703125,
       "height": 180,
       "angle": 0,
@@ -60,20 +60,20 @@
       "index": "b9z",
       "roundness": null,
       "seed": 1950594552,
-      "version": 1391,
-      "versionNonce": 1054801189,
+      "version": 1448,
+      "versionNonce": 2023570699,
       "isDeleted": false,
       "boundElements": [
         {
-          "id": "Rl1YStshjM-GkTOc57PRv",
+          "id": "RR349o8nLajNcuiG0QZ6w",
           "type": "arrow"
         },
         {
-          "id": "RR349o8nLajNcuiG0QZ6w",
+          "id": "JXx7OHGSuUugYSlIQx-8s",
           "type": "arrow"
         }
       ],
-      "updated": 1770118636640,
+      "updated": 1770126168718,
       "link": null,
       "locked": false,
       "text": "- call the AI Agent\n    - AI could call tools if needed\n    - generate final answer\n- send final answer to the channel",
@@ -1341,8 +1341,8 @@
     {
       "id": "dMBc83GZyNRIbDplcx9Ld",
       "type": "text",
-      "x": 793.8806243991323,
-      "y": 10876.240296671525,
+      "x": 1130.5472910657988,
+      "y": 10982.906963338193,
       "width": 599.3282470703125,
       "height": 135,
       "angle": 0,
@@ -1358,16 +1358,16 @@
       "index": "bAR",
       "roundness": null,
       "seed": 1352006904,
-      "version": 517,
-      "versionNonce": 1991118981,
+      "version": 707,
+      "versionNonce": 1135043499,
       "isDeleted": false,
       "boundElements": [
         {
-          "id": "Rl1YStshjM-GkTOc57PRv",
+          "id": "29seWORQ2fUDPxXzf2Km7",
           "type": "arrow"
         }
       ],
-      "updated": 1770118636640,
+      "updated": 1770126168718,
       "link": null,
       "locked": false,
       "text": "- call the AI Agent\n    - generate final answer\n- send final answer to the channel",
@@ -1383,8 +1383,8 @@
     {
       "id": "nPM5CPfIr6AeoesZneSuY",
       "type": "text",
-      "x": 600.2165008639761,
-      "y": 11467.740296671525,
+      "x": 396.8831675306426,
+      "y": 11904.406963338193,
       "width": 599.3282470703125,
       "height": 225,
       "angle": 0,
@@ -1400,8 +1400,8 @@
       "index": "bAT",
       "roundness": null,
       "seed": 1263984632,
-      "version": 1580,
-      "versionNonce": 1040431077,
+      "version": 1633,
+      "versionNonce": 66303563,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1413,7 +1413,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1770118636640,
+      "updated": 1770126168718,
       "link": null,
       "locked": false,
       "text": "- set the context for the agent\n- call the AI Agent\n    - AI could call tools if needed\n    - generate final answer\n- send final answer to the channel",
@@ -1429,9 +1429,9 @@
     {
       "id": "Rl1YStshjM-GkTOc57PRv",
       "type": "arrow",
-      "x": 1400.2088714694448,
-      "y": 10943.640296671523,
-      "width": 232.98172607421884,
+      "x": 1283.5422048027776,
+      "y": 11463.640296671523,
+      "width": 232.98172607421907,
       "height": 214.600000000004,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -1446,11 +1446,11 @@
       "index": "bAU",
       "roundness": null,
       "seed": 1938606216,
-      "version": 618,
-      "versionNonce": 250442565,
-      "isDeleted": false,
+      "version": 651,
+      "versionNonce": 608605195,
+      "isDeleted": true,
       "boundElements": [],
-      "updated": 1770118636640,
+      "updated": 1770126119956,
       "link": null,
       "locked": false,
       "points": [
@@ -1459,11 +1459,11 @@
           0
         ],
         [
-          232.98172607421884,
+          232.98172607421907,
           0
         ],
         [
-          232.98172607421884,
+          232.98172607421907,
           214.600000000004
         ]
       ],
@@ -1493,8 +1493,8 @@
     {
       "id": "RR349o8nLajNcuiG0QZ6w",
       "type": "arrow",
-      "x": 1326.6264740085073,
-      "y": 11239.240296671524,
+      "x": 1123.2931406751738,
+      "y": 11675.906963338191,
       "width": 457.745849609375,
       "height": 223.50000000000364,
       "angle": 0,
@@ -1510,11 +1510,11 @@
       "index": "bAV",
       "roundness": null,
       "seed": 1439923960,
-      "version": 602,
-      "versionNonce": 1170784933,
+      "version": 655,
+      "versionNonce": 677164267,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1770118636640,
+      "updated": 1770126168718,
       "link": null,
       "locked": false,
       "points": [
@@ -1557,8 +1557,8 @@
     {
       "id": "btZEcwMNmN9Idf4YqhMLT",
       "type": "text",
-      "x": 1354.216500863976,
-      "y": 11827.740296671525,
+      "x": 1150.8831675306426,
+      "y": 12264.406963338193,
       "width": 599.3282470703125,
       "height": 270,
       "angle": 0,
@@ -1574,8 +1574,8 @@
       "index": "bAW",
       "roundness": null,
       "seed": 130706168,
-      "version": 1416,
-      "versionNonce": 1464018437,
+      "version": 1469,
+      "versionNonce": 1617747851,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1587,7 +1587,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1770118636640,
+      "updated": 1770126168718,
       "link": null,
       "locked": false,
       "text": "- set the context for the agent\n- load the existing messages\n- call the AI Agent\n    - AI could call tools if needed\n    - generate final answer\n- send final answer to the channel",
@@ -1603,8 +1603,8 @@
     {
       "id": "hzLKvMQSLnOce2K1zUAsh",
       "type": "arrow",
-      "x": 1206.5447479342886,
-      "y": 11564.240296671525,
+      "x": 1003.2114146009551,
+      "y": 12000.906963338193,
       "width": 447.23587646484384,
       "height": 257.5,
       "angle": 0,
@@ -1620,11 +1620,11 @@
       "index": "bAX",
       "roundness": null,
       "seed": 636157576,
-      "version": 612,
-      "versionNonce": 1180310885,
+      "version": 665,
+      "versionNonce": 106870315,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1770118636640,
+      "updated": 1770126168718,
       "link": null,
       "locked": false,
       "points": [
@@ -1667,8 +1667,8 @@
     {
       "id": "bGgI8XDsmUOofbZ7u353J",
       "type": "text",
-      "x": 576.2165008639761,
-      "y": 12185.740296671525,
+      "x": 372.8831675306426,
+      "y": 12622.406963338193,
       "width": 599.3282470703125,
       "height": 315,
       "angle": 0,
@@ -1684,8 +1684,8 @@
       "index": "bAY",
       "roundness": null,
       "seed": 1475369976,
-      "version": 1422,
-      "versionNonce": 1515923653,
+      "version": 1475,
+      "versionNonce": 1226619083,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1693,7 +1693,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1770118636640,
+      "updated": 1770126168718,
       "link": null,
       "locked": false,
       "text": "- set the context for the agent\n- load the existing messages\n- call the AI Agent\n    - AI could call tools if needed\n    - AI could need human handoff\n    - generate final answer\n- send final answer to the channel",
@@ -1709,8 +1709,8 @@
     {
       "id": "mO_Z_Zlwz0MbCZtj6DSGe",
       "type": "arrow",
-      "x": 1347.216500863976,
-      "y": 11941.240296671525,
+      "x": 1143.8831675306426,
+      "y": 12377.906963338193,
       "width": 503.33587646484364,
       "height": 237.5,
       "angle": 0,
@@ -1726,11 +1726,11 @@
       "index": "bAZ",
       "roundness": null,
       "seed": 2054874760,
-      "version": 616,
-      "versionNonce": 350472229,
+      "version": 669,
+      "versionNonce": 373385067,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1770118636640,
+      "updated": 1770126168718,
       "link": null,
       "locked": false,
       "points": [
@@ -2566,7 +2566,7 @@
     {
       "id": "6oWkAdXlrv63F2Iz3-2sS",
       "type": "image",
-      "x": 705.6078854406132,
+      "x": 652.2745521072798,
       "y": 8502.406963338191,
       "width": 459.96143250688556,
       "height": 272.8202614379077,
@@ -2583,11 +2583,11 @@
       "index": "bAr",
       "roundness": null,
       "seed": 745474027,
-      "version": 280,
-      "versionNonce": 1044515307,
+      "version": 295,
+      "versionNonce": 1801156165,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1770118001486,
+      "updated": 1770126097021,
       "link": null,
       "locked": false,
       "status": "saved",
@@ -2601,7 +2601,7 @@
     {
       "id": "Rk9fCjEu1RYOfP_fZAKoa",
       "type": "text",
-      "x": 780.5886016940556,
+      "x": 727.2552683607221,
       "y": 8880.573630004857,
       "width": 316.33209228515625,
       "height": 90,
@@ -2618,11 +2618,11 @@
       "index": "bAs",
       "roundness": null,
       "seed": 272506667,
-      "version": 90,
-      "versionNonce": 417305739,
+      "version": 105,
+      "versionNonce": 192832933,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1770118001486,
+      "updated": 1770126097021,
       "link": null,
       "locked": false,
       "text": "tools for external\ninformation",
@@ -2634,6 +2634,180 @@
       "originalText": "tools for external\ninformation",
       "autoResize": true,
       "lineHeight": 1.25
+    },
+    {
+      "id": "-mz0zrJ6uWM03tPxFXSSo",
+      "type": "text",
+      "x": 465.2578114922396,
+      "y": 11247.24029667153,
+      "width": 599.3282470703125,
+      "height": 180,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 2,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "bAt",
+      "roundness": null,
+      "seed": 2133515915,
+      "version": 793,
+      "versionNonce": 1142374923,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "29seWORQ2fUDPxXzf2Km7",
+          "type": "arrow"
+        },
+        {
+          "id": "JXx7OHGSuUugYSlIQx-8s",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1770126168718,
+      "link": null,
+      "locked": false,
+      "text": "- call the AI Agent\n    - generate final answer\n    - add input guardrail\n- send final answer to the channel",
+      "fontSize": 36,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "- call the AI Agent\n    - generate final answer\n    - add input guardrail\n- send final answer to the channel",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "29seWORQ2fUDPxXzf2Km7",
+      "type": "arrow",
+      "x": 1123.5472910657986,
+      "y": 11050.306963338191,
+      "width": 398.62535603840286,
+      "height": 189.93333333334158,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 2,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "bAu",
+      "roundness": null,
+      "seed": 1349033125,
+      "version": 128,
+      "versionNonce": 2073610411,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1770126168718,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -398.62535603840286,
+          0
+        ],
+        [
+          -398.62535603840286,
+          189.93333333334158
+        ]
+      ],
+      "startBinding": {
+        "elementId": "dMBc83GZyNRIbDplcx9Ld",
+        "mode": "orbit",
+        "fixedPoint": [
+          -0.011679743169487214,
+          0.4992592592592431
+        ]
+      },
+      "endBinding": {
+        "elementId": "-mz0zrJ6uWM03tPxFXSSo",
+        "mode": "orbit",
+        "fixedPoint": [
+          0.433258610460075,
+          -0.038888888888878786
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
+    },
+    {
+      "id": "JXx7OHGSuUugYSlIQx-8s",
+      "type": "arrow",
+      "x": 1071.5860585625521,
+      "y": 11337.14029667153,
+      "width": 358.2712056477783,
+      "height": 257.7666666666628,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 2,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "bAv",
+      "roundness": null,
+      "seed": 365379179,
+      "version": 135,
+      "versionNonce": 1651538763,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1770126168718,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          358.2712056477783,
+          0
+        ],
+        [
+          358.2712056477783,
+          257.7666666666628
+        ]
+      ],
+      "startBinding": {
+        "elementId": "-mz0zrJ6uWM03tPxFXSSo",
+        "mode": "orbit",
+        "fixedPoint": [
+          1.0116797431694868,
+          0.4994444444444424
+        ]
+      },
+      "endBinding": {
+        "elementId": "wfYGfuXqv4h-6rQb10ZWC",
+        "mode": "orbit",
+        "fixedPoint": [
+          0.49983314652615074,
+          -0.03888888888888889
+        ]
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": true,
+      "fixedSegments": null,
+      "startIsSpecial": null,
+      "endIsSpecial": null
     }
   ],
   "appState": {
