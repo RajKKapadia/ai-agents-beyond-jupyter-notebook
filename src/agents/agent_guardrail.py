@@ -16,7 +16,7 @@ class WeatherOutput(BaseModel):
 
 guardrail_agent = Agent(
     name="Guardrail check",
-    instructions="Check if the user is asking about the weather and doing general conversation.",
+    instructions="Check if the user is asking about weather information and doing general conversation.",
     output_type=WeatherOutput,
 )
 
@@ -27,7 +27,9 @@ async def weather_guardrail(
 ) -> GuardrailFunctionOutput:
     result = await Runner.run(guardrail_agent, input, context=ctx.context)
 
+    print(result.final_output)
+
     return GuardrailFunctionOutput(
         output_info=result.final_output,
-        tripwire_triggered=result.final_output.is_weather,
+        tripwire_triggered=not result.final_output.is_weather,
     )
