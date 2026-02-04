@@ -38,7 +38,10 @@ async def receive_webhook(
         user_message = extract_message_text_from_update(update)
 
         if chat_id:
-            result = await Runner.run(weather_agent, user_message)
+            result = await Runner.run(
+                weather_agent,
+                user_message,
+            )
             response_text = result.final_output
             await send_message(chat_id, response_text)
 

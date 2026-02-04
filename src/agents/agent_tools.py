@@ -1,32 +1,40 @@
-from typing_extensions import TypedDict
-from typing import Literal
+from typing import Any, Literal
+from pydantic import BaseModel, Field
 
-from agents import function_tool
+from agents import RunContextWrapper, FunctionTool
 import httpx
 
 from src.config import OPENWEATHERMAP_API_KEY
 
 
-class Location(TypedDict):
-    location: str
-    unit: Literal["metric", "imperial", "standard"]
+class Location(BaseModel):
+    """Weather location parameters"""
+    location: str = Field(description="City name (e.g., 'London', 'New York', 'Tokyo')")
+    unit: Literal["metric", "imperial", "standard"] = Field(
+        default="metric",
+        description="Temperature unit - 'metric' (Celsius), 'imperial' (Fahrenheit), or 'standard' (Kelvin)"
+    )
 
 
-@function_tool
-async def fetch_weather(location: Location) -> str:
-    """Fetch the weather for a given location using OpenWeatherMap API.
-
+async def run_fetch_weather(ctx: RunContextWrapper[Any], args: str) -> str:
+    """
+    Fetch the weather for a given location using OpenWeatherMap API.
+    
+    This function has access to the context and can log usage information.
+    
     Args:
-        location: Dictionary containing:
-            - location: City name (e.g., "London", "New York", "Tokyo")
-            - unit: Temperature unit - "metric" (Celsius), "imperial" (Fahrenheit), or "standard" (Kelvin)
-
+        ctx: The run context wrapper containing usage stats and other metadata
+        args: JSON string of arguments to parse into Location model
+    
     Returns:
         A formatted string with weather information including temperature,
         conditions, humidity, and wind speed.
     """
-    city = location.get("location", "")
-    unit = location.get("unit", "metric")
+    # Parse the JSON arguments into Location model
+    location_data = Location.model_validate_json(args)
+    
+    city = location_data.location
+    unit = location_data.unit
 
     if not city:
         return "Error: No location provided"
@@ -87,3 +95,12 @@ async def fetch_weather(location: Location) -> str:
         )
     except Exception as e:
         return f"Error: An unexpected error occurred - {str(e)}"
+
+
+# Create the tool using FunctionTool with access to context
+fetch_weather = FunctionTool(
+    name="fetch_weather",
+    description="Fetch the current weather for a given location using OpenWeatherMap API. Returns temperature, conditions, humidity, and wind speed.",
+    params_json_schema=Location.model_json_schema(),
+    on_invoke_tool=run_fetch_weather,
+)

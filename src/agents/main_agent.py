@@ -3,6 +3,7 @@ from agents import Agent, OpenAIResponsesModel, AsyncOpenAI
 from src.config import OPENAI_MODEL, OPENAI_API_KEY
 from src.agents.agent_guardrail import weather_guardrail
 from src.agents.agent_tools import fetch_weather
+from src.agents.hooks import WeatherAgentHooks
 
 weather_agent = Agent(
     name="Weather Agent",
@@ -12,4 +13,5 @@ weather_agent = Agent(
     ),
     input_guardrails=[weather_guardrail],
     tools=[fetch_weather],
+    hooks=WeatherAgentHooks()
 )
