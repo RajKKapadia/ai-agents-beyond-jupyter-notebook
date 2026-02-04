@@ -11,3 +11,6 @@ wheels/
 
 # Environment variables
 .env
+
+# Custom files
+.ruff_cache/
