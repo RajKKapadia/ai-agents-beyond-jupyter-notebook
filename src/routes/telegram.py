@@ -4,11 +4,14 @@ from fastapi import APIRouter, Request, HTTPException, Header
 import httpx
 from agents import InputGuardrailTripwireTriggered, Runner
 
+from src.agents.user_context import UserContext
 from src.config import TELEGRAM_BOT_TOKEN, TELEGRAM_X_SECRET_KEY
 from src.utils.telegram import (
+    SendMessageRequest,
     send_message,
     extract_chat_id_from_update,
     extract_message_text_from_update,
+    extract_user_info_from_update,
 )
 from src.agents.main_agent import weather_agent
 
@@ -36,23 +39,64 @@ async def receive_webhook(
     try:
         chat_id = extract_chat_id_from_update(update)
         user_message = extract_message_text_from_update(update)
+        user_info = extract_user_info_from_update(update)
 
-        if chat_id:
-            result = await Runner.run(
-                weather_agent,
-                user_message,
+        if not chat_id:
+            return {"status": "ok", "message": "No chat_id found"}
+
+        # Check if message is from a bot
+        if user_info and user_info.is_bot:
+            print(f"⚠️  Ignoring message from bot: {user_info.first_name}")
+            await send_message(
+                SendMessageRequest(
+                    chat_id=chat_id,
+                    text="🤖 I don't respond to other bots. If you're a human, please use a regular account!",
+                ),
             )
-            response_text = result.final_output
-            await send_message(chat_id, response_text)
+            return {
+                "status": "ok",
+                "message": "Message from bot, responded accordingly",
+            }
+
+        # Extract user info
+        first_name = user_info.first_name if user_info else "User"
+        user_id = user_info.user_id if user_info else "Unknown"
+
+        print(f"👤 Message from: {first_name} (ID: {user_id})")
+        print(f"💬 Message: {user_message}")
+
+        user_context = UserContext(chat_id=chat_id, first_name=first_name, is_bot=user_info.is_bot)
+
+        # Process the message with the agent
+        result = await Runner.run(
+            weather_agent,
+            user_message,
+            context=user_context,
+        )
+        response_text = result.final_output
+
+        # Send personalized response
+        await send_message(
+            SendMessageRequest(chat_id=chat_id, text=response_text),
+        )
 
     except InputGuardrailTripwireTriggered:
         await send_message(
-            chat_id,
-            "I'm sorry, I can't help with that. Please ask me about something else.",
+            SendMessageRequest(
+                chat_id=chat_id,
+                text=f"I'm sorry {first_name}, I can't help with that. Please ask me about something else.",
+            ),
         )
 
     except Exception as e:
         print(f"Error sending message back: {e}")
+        if chat_id:
+            await send_message(
+                SendMessageRequest(
+                    chat_id=chat_id,
+                    text="Sorry, something went wrong. Please try again later.",
+                ),
+            )
 
     return {"status": "ok", "message": "Webhook received successfully"}
 

@@ -1,10 +1,12 @@
-from typing import Any, Literal
+from typing import Literal
 from pydantic import BaseModel, Field
 
 from agents import RunContextWrapper, FunctionTool
 import httpx
 
+from src.agents.user_context import UserContext
 from src.config import OPENWEATHERMAP_API_KEY
+from src.utils.telegram import SendMessageRequest, send_message
 
 
 class Location(BaseModel):
@@ -16,7 +18,7 @@ class Location(BaseModel):
     )
 
 
-async def run_fetch_weather(ctx: RunContextWrapper[Any], args: str) -> str:
+async def run_fetch_weather(ctx: RunContextWrapper[UserContext], args: str) -> str:
     """
     Fetch the weather for a given location using OpenWeatherMap API.
     
@@ -43,6 +45,8 @@ async def run_fetch_weather(ctx: RunContextWrapper[Any], args: str) -> str:
     url = "https://api.openweathermap.org/data/2.5/weather"
 
     params = {"q": city, "appid": OPENWEATHERMAP_API_KEY, "units": unit}
+
+    await send_message(SendMessageRequest(chat_id=ctx.context.chat_id, text=f"Fetching weather for {city} in {unit} units"))
 
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
