@@ -1,4 +1,4 @@
-from agents import Agent, OpenAIResponsesModel, AsyncOpenAI
+from agents import Agent, OpenAIResponsesModel, AsyncOpenAI, WebSearchTool          
 
 from src.config import OPENAI_MODEL, OPENAI_API_KEY
 # from src.agents.agent_guardrail import weather_guardrail
@@ -13,6 +13,6 @@ weather_agent = Agent[UserContext](
         model=OPENAI_MODEL, openai_client=AsyncOpenAI(api_key=OPENAI_API_KEY)
     ),
     # input_guardrails=[weather_guardrail],
-    tools=[fetch_weather, { "type": "web_search_preview" }],
+    tools=[fetch_weather, WebSearchTool()],
     hooks=WeatherAgentHooks(),
 )
