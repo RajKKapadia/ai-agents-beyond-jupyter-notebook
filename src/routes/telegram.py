@@ -3,9 +3,11 @@ from typing import Optional
 from fastapi import APIRouter, Request, HTTPException, Header
 import httpx
 from agents import InputGuardrailTripwireTriggered, Runner
+from agents.extensions.memory import SQLAlchemySession
 
 from src.agents.user_context import UserContext
 from src.config import TELEGRAM_BOT_TOKEN, TELEGRAM_X_SECRET_KEY
+from src.database import engine
 from src.utils.telegram import (
     SendMessageRequest,
     send_message,
@@ -65,15 +67,26 @@ async def receive_webhook(
         print(f"👤 Message from: {first_name} (ID: {user_id})")
         print(f"💬 Message: {user_message}")
 
-        user_context = UserContext(chat_id=chat_id, first_name=first_name, is_bot=user_info.is_bot)
+        user_context = UserContext(
+            chat_id=chat_id, first_name=first_name, is_bot=user_info.is_bot
+        )
+
+        session = SQLAlchemySession(
+            session_id=f"conv_telegram_{chat_id}",
+            engine=engine,
+            create_tables=True,
+        )
 
         # Process the message with the agent
         result = await Runner.run(
-            weather_agent,
-            user_message,
+            starting_agent=weather_agent,
+            input=user_message,
             context=user_context,
+            session=session,
         )
         response_text = result.final_output
+
+        print(session.session_id)
 
         # Send personalized response
         await send_message(
@@ -87,6 +100,7 @@ async def receive_webhook(
                 text=f"I'm sorry {first_name}, I can't help with that. Please ask me about something else.",
             ),
         )
+        await session.pop_item()
 
     except Exception as e:
         print(f"Error sending message back: {e}")
@@ -97,6 +111,7 @@ async def receive_webhook(
                     text="Sorry, something went wrong. Please try again later.",
                 ),
             )
+        await session.pop_item()
 
     return {"status": "ok", "message": "Webhook received successfully"}
 
