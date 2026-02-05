@@ -241,3 +241,86 @@ def build_multimodal_input(
         content.append({"type": "input_file", "file_url": file_url})
     
     return [{"role": "user", "content": content}]
+
+
+def build_approval_keyboard(approval_id: str) -> dict:
+    """
+    Build inline keyboard with Approve/Reject buttons for human-in-the-loop approval.
+
+    Args:
+        approval_id: Unique approval ID to include in callback data
+
+    Returns:
+        dict: Inline keyboard markup for Telegram
+    """
+    return {
+        "inline_keyboard": [
+            [
+                {"text": "✅ Approve", "callback_data": f"approve:{approval_id}"},
+                {"text": "❌ Reject", "callback_data": f"reject:{approval_id}"}
+            ]
+        ]
+    }
+
+
+async def send_approval_request(
+    chat_id: int, 
+    tool_name: str, 
+    arguments: Optional[str],
+    approval_id: str
+) -> dict:
+    """
+    Send approval request message with inline keyboard to user.
+
+    Args:
+        chat_id: Telegram chat ID
+        tool_name: Name of the tool requiring approval
+        arguments: Tool arguments (JSON string)
+        approval_id: Unique approval ID
+
+    Returns:
+        dict: Response from Telegram API
+    """
+    telegram_api_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    
+    # Format the approval message
+    message = "🔐 **Approval Required**\n\n"
+    message += f"Tool: `{tool_name}`\n"
+    if arguments:
+        message += f"Arguments: `{arguments}`\n\n"
+    message += "Please approve or reject this action:"
+    
+    payload = {
+        "chat_id": chat_id,
+        "text": message,
+        "parse_mode": "Markdown",
+        "reply_markup": build_approval_keyboard(approval_id)
+    }
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.post(telegram_api_url, json=payload)
+        response.raise_for_status()
+        return response.json()
+
+
+async def answer_callback_query(callback_query_id: str, text: Optional[str] = None) -> dict:
+    """
+    Answer callback query to remove loading state from inline keyboard button.
+
+    Args:
+        callback_query_id: The callback query ID from Telegram
+        text: Optional text to show as notification (not used if None)
+
+    Returns:
+        dict: Response from Telegram API
+    """
+    telegram_api_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/answerCallbackQuery"
+    
+    payload = {"callback_query_id": callback_query_id}
+    if text:
+        payload["text"] = text
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.post(telegram_api_url, json=payload)
+        response.raise_for_status()
+        return response.json()
