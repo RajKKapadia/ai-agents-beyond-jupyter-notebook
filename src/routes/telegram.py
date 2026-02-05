@@ -1,3 +1,4 @@
+from re import A
 from typing import Optional
 
 from fastapi import APIRouter, Request, HTTPException, Header
@@ -14,6 +15,10 @@ from src.utils.telegram import (
     extract_chat_id_from_update,
     extract_message_text_from_update,
     extract_user_info_from_update,
+    extract_photo_from_update,
+    extract_document_from_update,
+    get_telegram_file_url,
+    build_multimodal_input,
 )
 from src.agents.main_agent import weather_agent
 
@@ -40,7 +45,6 @@ async def receive_webhook(
     # Send a message back to the user
     try:
         chat_id = extract_chat_id_from_update(update)
-        user_message = extract_message_text_from_update(update)
         user_info = extract_user_info_from_update(update)
 
         if not chat_id:
@@ -63,12 +67,12 @@ async def receive_webhook(
         # Extract user info
         first_name = user_info.first_name if user_info else "User"
         user_id = user_info.user_id if user_info else "Unknown"
+        is_bot = user_info.is_bot if user_info else False
 
         print(f"👤 Message from: {first_name} (ID: {user_id})")
-        print(f"💬 Message: {user_message}")
 
         user_context = UserContext(
-            chat_id=chat_id, first_name=first_name, is_bot=user_info.is_bot
+            chat_id=chat_id, first_name=first_name, is_bot=is_bot
         )
 
         session = SQLAlchemySession(
@@ -77,16 +81,74 @@ async def receive_webhook(
             create_tables=True,
         )
 
+        # Determine input type and build appropriate agent input
+        agent_input = None
+        input_type = "text"
+        
+        # Check for photos first
+        photo_data = extract_photo_from_update(update)
+        if photo_data:
+            try:
+                print(f"📷 Processing photo with caption: {photo_data.get('caption')}")
+                file_url = await get_telegram_file_url(photo_data["file_id"])
+                agent_input = build_multimodal_input(
+                    text=photo_data.get("caption"),
+                    file_url=file_url,
+                    file_type="image"
+                )
+                input_type = "image"
+            except Exception as e:
+                print(f"❌ Error processing photo: {e}")
+                await send_message(
+                    SendMessageRequest(
+                        chat_id=chat_id,
+                        text="Sorry, I couldn't process that image. Please try again or send a different image.",
+                    ),
+                )
+                return {"status": "ok", "message": f"Failed to process photo: {str(e)}"}
+        
+        # Check for documents
+        elif document_data := extract_document_from_update(update):
+            try:
+                print(f"📄 Processing document: {document_data.get('file_name')} ({document_data.get('mime_type')})")
+                print(f"   Caption: {document_data.get('caption')}")
+                file_url = await get_telegram_file_url(document_data["file_id"])
+                agent_input = build_multimodal_input(
+                    text=document_data.get("caption"),
+                    file_url=file_url,
+                    file_type="file"
+                )
+                input_type = "document"
+            except Exception as e:
+                print(f"❌ Error processing document: {e}")
+                await send_message(
+                    SendMessageRequest(
+                        chat_id=chat_id,
+                        text="Sorry, I couldn't process that document. Please try again or send a different file.",
+                    ),
+                )
+                return {"status": "ok", "message": f"Failed to process document: {str(e)}"}
+        
+        # Fallback to text
+        else:
+            agent_input = extract_message_text_from_update(update)
+            print(f"💬 Message: {agent_input}")
+            input_type = "text"
+        
+        # Check if we have valid input
+        if not agent_input:
+            print("⚠️  No valid input found in update")
+            return {"status": "ok", "message": "No valid input found"}
+
         # Process the message with the agent
+        print(f"🤖 Sending {input_type} input to agent...") 
         result = await Runner.run(
             starting_agent=weather_agent,
-            input=user_message,
+            input=agent_input,
             context=user_context,
             session=session,
         )
         response_text = result.final_output
-
-        print(session.session_id)
 
         # Send personalized response
         await send_message(

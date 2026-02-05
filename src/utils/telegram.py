@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Literal
 
 import httpx
 from pydantic import BaseModel
@@ -121,3 +121,123 @@ def extract_user_info_from_update(update: dict) -> Optional[UserInfo]:
         if user_data
         else None
     )
+
+
+async def get_telegram_file_url(file_id: str) -> str:
+    """
+    Get the public URL for a Telegram file using the bot token and file_id.
+
+    Args:
+        file_id: The Telegram file_id
+
+    Returns:
+        str: Public URL to access the file
+
+    Raises:
+        httpx.HTTPError: If the request to Telegram API fails
+    """
+    telegram_api_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getFile"
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.get(telegram_api_url, params={"file_id": file_id})
+        response.raise_for_status()
+        result = response.json()
+        
+        if not result.get("ok"):
+            raise ValueError(f"Failed to get file info: {result}")
+        
+        file_path = result["result"]["file_path"]
+        return f"https://api.telegram.org/file/bot{TELEGRAM_BOT_TOKEN}/{file_path}"
+
+
+def extract_photo_from_update(update: dict) -> Optional[dict]:
+    """
+    Extract photo data (file_id, caption) from a Telegram update.
+
+    Args:
+        update: The Telegram update object
+
+    Returns:
+        dict: Photo data with file_id and optional caption, or None if no photo found
+    """
+    if "message" in update and "photo" in update["message"]:
+        # Telegram sends multiple photo sizes, get the largest one (last in array)
+        photos = update["message"]["photo"]
+        if photos:
+            largest_photo = photos[-1]
+            return {
+                "file_id": largest_photo["file_id"],
+                "caption": update["message"].get("caption"),
+            }
+    elif "edited_message" in update and "photo" in update["edited_message"]:
+        photos = update["edited_message"]["photo"]
+        if photos:
+            largest_photo = photos[-1]
+            return {
+                "file_id": largest_photo["file_id"],
+                "caption": update["edited_message"].get("caption"),
+            }
+    
+    return None
+
+
+def extract_document_from_update(update: dict) -> Optional[dict]:
+    """
+    Extract document data (file_id, file_name, mime_type, caption) from a Telegram update.
+
+    Args:
+        update: The Telegram update object
+
+    Returns:
+        dict: Document data with file_id, file_name, mime_type and optional caption,
+              or None if no document found
+    """
+    if "message" in update and "document" in update["message"]:
+        document = update["message"]["document"]
+        return {
+            "file_id": document["file_id"],
+            "file_name": document.get("file_name", "document"),
+            "mime_type": document.get("mime_type", "application/octet-stream"),
+            "caption": update["message"].get("caption"),
+        }
+    elif "edited_message" in update and "document" in update["edited_message"]:
+        document = update["edited_message"]["document"]
+        return {
+            "file_id": document["file_id"],
+            "file_name": document.get("file_name", "document"),
+            "mime_type": document.get("mime_type", "application/octet-stream"),
+            "caption": update["edited_message"].get("caption"),
+        }
+    
+    return None
+
+
+def build_multimodal_input(
+    text: Optional[str], 
+    file_url: str, 
+    file_type: Literal["image", "file"]
+) -> list[dict]:
+    """
+    Build the multimodal input structure for the agent.
+
+    Args:
+        text: Optional text/caption to include
+        file_url: URL to the image or file
+        file_type: Type of file - "image" or "file"
+
+    Returns:
+        list: Multimodal input structure compatible with OpenAI Responses API
+    """
+    content = []
+    
+    # Add text if provided
+    if text:
+        content.append({"type": "input_text", "text": text})
+    
+    # Add file based on type
+    if file_type == "image":
+        content.append({"type": "input_image", "image_url": file_url})
+    else:  # file_type == "file"
+        content.append({"type": "input_file", "file_url": file_url})
+    
+    return [{"role": "user", "content": content}]
