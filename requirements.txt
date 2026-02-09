@@ -11,6 +11,8 @@ anyio==4.12.1
     #   openai
     #   sse-starlette
     #   starlette
+arq==0.27.0
+    # via ai-agents-beyond-jupyter-notebook
 asyncpg==0.31.0
     # via openai-agents
 attrs==25.4.0
@@ -27,7 +29,9 @@ cffi==2.0.0 ; platform_python_implementation != 'PyPy'
 charset-normalizer==3.4.4
     # via requests
 click==8.3.1
-    # via uvicorn
+    # via
+    #   arq
+    #   uvicorn
 colorama==0.4.6
     # via
     #   click
@@ -37,7 +41,7 @@ cryptography==46.0.4
     # via pyjwt
 distro==1.9.0
     # via openai
-fastapi==0.128.0
+fastapi==0.128.1
     # via ai-agents-beyond-jupyter-notebook
 greenlet==3.3.1 ; platform_machine == 'AMD64' or platform_machine == 'WIN32' or platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'ppc64le' or platform_machine == 'win32' or platform_machine == 'x86_64'
     # via sqlalchemy
@@ -47,6 +51,8 @@ h11==0.16.0
     # via
     #   httpcore
     #   uvicorn
+hiredis==3.3.0
+    # via redis
 httpcore==1.0.9
     # via httpx
 httpx==0.28.1
@@ -71,7 +77,9 @@ mcp==1.26.0
     # via openai-agents
 openai==2.16.0
     # via openai-agents
-openai-agents==0.7.0
+openai-agents==0.8.0
+    # via ai-agents-beyond-jupyter-notebook
+psycopg2-binary==2.9.11
     # via ai-agents-beyond-jupyter-notebook
 pycparser==3.0 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
     # via cffi
@@ -87,7 +95,9 @@ pydantic-core==2.41.5
 pydantic-settings==2.12.0
     # via mcp
 pyjwt==2.11.0
-    # via mcp
+    # via
+    #   mcp
+    #   redis
 python-dotenv==1.2.1
     # via
     #   ai-agents-beyond-jupyter-notebook
@@ -96,6 +106,10 @@ python-multipart==0.0.22
     # via mcp
 pywin32==311 ; sys_platform == 'win32'
     # via mcp
+redis==5.3.1
+    # via
+    #   ai-agents-beyond-jupyter-notebook
+    #   arq
 referencing==0.37.0
     # via
     #   jsonschema
@@ -118,7 +132,7 @@ starlette==0.50.0
     #   fastapi
     #   mcp
     #   sse-starlette
-tqdm==4.67.2
+tqdm==4.67.3
     # via openai
 types-requests==2.32.4.20260107
     # via openai-agents
