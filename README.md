@@ -96,6 +96,41 @@ uv run python run_worker.py
 
 Default API address: `http://127.0.0.1:8080`
 
+## Run with Docker Compose
+
+This starts all required services:
+
+- PostgreSQL
+- Redis
+- FastAPI app
+- ARQ worker
+
+1. Create and fill `.env`:
+
+```bash
+cp .env.example .env
+```
+
+2. Start everything:
+
+```bash
+docker compose up --build
+```
+
+3. Run in background:
+
+```bash
+docker compose up --build -d
+```
+
+4. Stop services:
+
+```bash
+docker compose down
+```
+
+PostgreSQL database creation is automatic via `POSTGRES_DB` in `docker-compose.yml` (default: `ai_agent`).
+
 ## API endpoints
 
 - `GET /` health check
