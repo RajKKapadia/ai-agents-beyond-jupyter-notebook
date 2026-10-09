@@ -1,6 +1,8 @@
 import os
+from collections.abc import AsyncGenerator
 from urllib.parse import urlparse
 
+from arq import ArqRedis, create_pool
 from arq.connections import RedisSettings
 from dotenv import load_dotenv
 
@@ -31,7 +33,7 @@ if not DATABASE_URL:
 if not REDIS_URL:
     raise ValueError("REDIS_URL is not set in environment variables")
 
-OPENAI_MODEL = "gpt-4.1-mini"
+OPENAI_MODEL = "gpt-6-luna"
 
 
 def get_arq_redis_settings() -> RedisSettings:
@@ -43,3 +45,8 @@ def get_arq_redis_settings() -> RedisSettings:
         database=int(parsed.path.lstrip("/") or 0),
         password=parsed.password,
     )
+
+
+async def get_arc_pool() -> AsyncGenerator[ArqRedis, None]:
+    arq_pool = await create_pool(settings_=get_arq_redis_settings())
+    yield arq_pool

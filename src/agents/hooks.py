@@ -5,7 +5,6 @@ from agents import (
     RunContextWrapper,
     Tool,
 )
-
 from src.agents.user_context import UserContext
 
 
@@ -15,7 +14,9 @@ class WeatherAgentHooks(AgentHooks):
     Implements on_start and on_end callbacks.
     """
 
-    async def on_start(self, context: AgentHookContext[UserContext], agent: Agent) -> None:
+    async def on_start(
+        self, context: AgentHookContext[UserContext], agent: Agent
+    ) -> None:
         """
         Called before the agent is invoked.
         Called each time the running agent is changed to this agent.
@@ -52,7 +53,11 @@ class WeatherAgentHooks(AgentHooks):
         print(f"Tool arguments: {context.tool_arguments}")
 
     async def on_tool_end(
-        self, context: RunContextWrapper[UserContext], agent: Agent, tool: Tool, result: str
+        self,
+        context: RunContextWrapper[UserContext],
+        agent: Agent,
+        tool: Tool,
+        result: str,
     ) -> None:
         print(f"✅ Tool '{tool.name}' completed")
         print(f"Tool Result: {result}")

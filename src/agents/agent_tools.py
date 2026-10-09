@@ -1,9 +1,10 @@
-from typing_extensions import TypedDict
+from datetime import datetime, timezone
 from typing import Literal
 
-from agents import function_tool
 import httpx
+from typing_extensions import TypedDict
 
+from agents import function_tool
 from src.config import OPENWEATHERMAP_API_KEY
 
 
@@ -12,9 +13,7 @@ class Location(TypedDict):
     unit: Literal["metric", "imperial", "standard"]
 
 
-@function_tool(
-    needs_approval=True
-)
+@function_tool(needs_approval=True)
 async def fetch_weather(location: Location) -> str:
     """Fetch the weather for a given location using OpenWeatherMap API.
 
@@ -82,10 +81,14 @@ async def fetch_weather(location: Location) -> str:
     except httpx.TimeoutException:
         return "Error: Request timed out. Please try again."
     except httpx.RequestError as e:
-        return f"Error: Network error occurred - {str(e)}"
+        return f"Error: Network error occurred - {e!s}"
     except KeyError as e:
-        return (
-            f"Error: Unexpected response format from weather API - missing key {str(e)}"
-        )
+        return f"Error: Unexpected response format from weather API - missing key {e!s}"
     except Exception as e:
-        return f"Error: An unexpected error occurred - {str(e)}"
+        return f"Error: An unexpected error occurred - {e!s}"
+
+
+@function_tool
+async def get_current_timestamp():
+    """Return the current time stamp of the server"""
+    return datetime.now(tz=timezone.UTC).strftime("%c")

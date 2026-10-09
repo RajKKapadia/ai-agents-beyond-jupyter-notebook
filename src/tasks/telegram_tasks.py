@@ -1,28 +1,26 @@
-"""ARQ task functions for processing Telegram updates in the background."""
-
-from agents import InputGuardrailTripwireTriggered, Runner
 from agents.extensions.memory import SQLAlchemySession
 
+from agents import InputGuardrailTripwireTriggered, Runner
 from src.agents.main_agent import weather_agent
 from src.agents.state_manager import (
-    save_pending_approval,
-    get_pending_approval,
     delete_pending_approval,
+    get_pending_approval,
+    save_pending_approval,
 )
 from src.agents.user_context import UserContext
 from src.database import engine
 from src.utils.telegram import (
     SendMessageRequest,
-    send_message,
-    extract_chat_id_from_update,
-    extract_message_text_from_update,
-    extract_user_info_from_update,
-    extract_photo_from_update,
-    extract_document_from_update,
-    get_telegram_file_url,
-    build_multimodal_input,
-    send_approval_request,
     answer_callback_query,
+    build_multimodal_input,
+    extract_chat_id_from_update,
+    extract_document_from_update,
+    extract_message_text_from_update,
+    extract_photo_from_update,
+    extract_user_info_from_update,
+    get_telegram_file_url,
+    send_approval_request,
+    send_message,
 )
 
 
@@ -290,7 +288,7 @@ async def process_callback_query_task(ctx: dict, update: dict) -> None:
         )
         await send_message(
             SendMessageRequest(
-                chat_id=chat_id, text=f"❌ Error processing approval: {str(e)}"
+                chat_id=chat_id, text=f"❌ Error processing approval: {e!s}"
             )
         )
         await session.pop_item()

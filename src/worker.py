@@ -1,7 +1,5 @@
-"""ARQ worker entry point for background task processing."""
-
 from src.config import REDIS_URL, get_arq_redis_settings
-from src.tasks.telegram_tasks import process_message_task, process_callback_query_task
+from src.tasks.telegram_tasks import process_callback_query_task, process_message_task
 from src.utils.redis_client import redis_client
 
 

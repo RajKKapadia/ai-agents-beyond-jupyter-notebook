@@ -1,14 +1,15 @@
-from typing import Optional
+from typing import Annotated
 
-from fastapi import APIRouter, Request, HTTPException, Header
 import httpx
+from arq import ArqRedis
+from fastapi import APIRouter, Depends, Header, HTTPException, Request
 
-from src.config import TELEGRAM_BOT_TOKEN, TELEGRAM_X_SECRET_KEY
+from src.config import TELEGRAM_BOT_TOKEN, TELEGRAM_X_SECRET_KEY, get_arc_pool
 from src.utils.telegram import (
     SendMessageRequest,
-    send_message,
     extract_chat_id_from_update,
     extract_user_info_from_update,
+    send_message,
 )
 
 router = APIRouter(prefix="/telegram", tags=["telegram"])
@@ -16,7 +17,9 @@ router = APIRouter(prefix="/telegram", tags=["telegram"])
 
 @router.post("/webhook")
 async def receive_webhook(
-    request: Request, x_telegram_bot_api_secret_token: Optional[str] = Header(None)
+    request: Request,
+    arq_pool: Annotated[ArqRedis, Depends(get_arc_pool)],
+    x_telegram_bot_api_secret_token: str | None = Header(None),
 ):
     """
     Receive webhook requests from Telegram.
@@ -31,8 +34,6 @@ async def receive_webhook(
     update = await request.json()
 
     print(f"Received Telegram update: {update}")
-
-    arq_pool = request.app.state.arq_pool
 
     # Handle callback queries (button clicks) for human-in-the-loop approvals
     if "callback_query" in update:
@@ -103,5 +104,5 @@ async def set_webhook(request: Request):
                 )
     except httpx.HTTPError as e:
         raise HTTPException(
-            status_code=500, detail=f"Error communicating with Telegram API: {str(e)}"
+            status_code=500, detail=f"Error communicating with Telegram API: {e!s}"
         )

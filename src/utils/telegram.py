@@ -1,4 +1,4 @@
-from typing import Optional, Literal
+from typing import Literal
 
 import httpx
 from pydantic import BaseModel
@@ -37,7 +37,7 @@ async def send_message(request: SendMessageRequest) -> dict:
         return response.json()
 
 
-def extract_chat_id_from_update(update: dict) -> Optional[int]:
+def extract_chat_id_from_update(update: dict) -> int | None:
     """
     Extract chat_id from a Telegram update.
 
@@ -57,7 +57,7 @@ def extract_chat_id_from_update(update: dict) -> Optional[int]:
     return None
 
 
-def extract_message_text_from_update(update: dict) -> Optional[str]:
+def extract_message_text_from_update(update: dict) -> str | None:
     """
     Extract message text from a Telegram update.
 
@@ -80,13 +80,13 @@ def extract_message_text_from_update(update: dict) -> Optional[str]:
 class UserInfo(BaseModel):
     user_id: int
     first_name: str
-    last_name: Optional[str] = None
-    username: Optional[str] = None
+    last_name: str | None = None
+    username: str | None = None
     is_bot: bool
-    language_code: Optional[str] = None
+    language_code: str | None = None
 
 
-def extract_user_info_from_update(update: dict) -> Optional[UserInfo]:
+def extract_user_info_from_update(update: dict) -> UserInfo | None:
     """
     Extract user information (firstname, username, user_id) from a Telegram update.
 
@@ -137,20 +137,20 @@ async def get_telegram_file_url(file_id: str) -> str:
         httpx.HTTPError: If the request to Telegram API fails
     """
     telegram_api_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getFile"
-    
+
     async with httpx.AsyncClient() as client:
         response = await client.get(telegram_api_url, params={"file_id": file_id})
         response.raise_for_status()
         result = response.json()
-        
+
         if not result.get("ok"):
             raise ValueError(f"Failed to get file info: {result}")
-        
+
         file_path = result["result"]["file_path"]
         return f"https://api.telegram.org/file/bot{TELEGRAM_BOT_TOKEN}/{file_path}"
 
 
-def extract_photo_from_update(update: dict) -> Optional[dict]:
+def extract_photo_from_update(update: dict) -> dict | None:
     """
     Extract photo data (file_id, caption) from a Telegram update.
 
@@ -177,11 +177,11 @@ def extract_photo_from_update(update: dict) -> Optional[dict]:
                 "file_id": largest_photo["file_id"],
                 "caption": update["edited_message"].get("caption"),
             }
-    
+
     return None
 
 
-def extract_document_from_update(update: dict) -> Optional[dict]:
+def extract_document_from_update(update: dict) -> dict | None:
     """
     Extract document data (file_id, file_name, mime_type, caption) from a Telegram update.
 
@@ -208,14 +208,12 @@ def extract_document_from_update(update: dict) -> Optional[dict]:
             "mime_type": document.get("mime_type", "application/octet-stream"),
             "caption": update["edited_message"].get("caption"),
         }
-    
+
     return None
 
 
 def build_multimodal_input(
-    text: Optional[str], 
-    file_url: str, 
-    file_type: Literal["image", "file"]
+    text: str | None, file_url: str, file_type: Literal["image", "file"]
 ) -> list[dict]:
     """
     Build the multimodal input structure for the agent.
@@ -229,17 +227,17 @@ def build_multimodal_input(
         list: Multimodal input structure compatible with OpenAI Responses API
     """
     content = []
-    
+
     # Add text if provided
     if text:
         content.append({"type": "input_text", "text": text})
-    
+
     # Add file based on type
     if file_type == "image":
         content.append({"type": "input_image", "image_url": file_url})
     else:  # file_type == "file"
         content.append({"type": "input_file", "file_url": file_url})
-    
+
     return [{"role": "user", "content": content}]
 
 
@@ -257,17 +255,14 @@ def build_approval_keyboard(approval_id: str) -> dict:
         "inline_keyboard": [
             [
                 {"text": "✅ Approve", "callback_data": f"approve:{approval_id}"},
-                {"text": "❌ Reject", "callback_data": f"reject:{approval_id}"}
+                {"text": "❌ Reject", "callback_data": f"reject:{approval_id}"},
             ]
         ]
     }
 
 
 async def send_approval_request(
-    chat_id: int, 
-    tool_name: str, 
-    arguments: Optional[str],
-    approval_id: str
+    chat_id: int, tool_name: str, arguments: str | None, approval_id: str
 ) -> dict:
     """
     Send approval request message with inline keyboard to user.
@@ -282,28 +277,30 @@ async def send_approval_request(
         dict: Response from Telegram API
     """
     telegram_api_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    
+
     # Format the approval message
     message = "🔐 **Approval Required**\n\n"
     message += f"Tool: `{tool_name}`\n"
     if arguments:
         message += f"Arguments: `{arguments}`\n\n"
     message += "Please approve or reject this action:"
-    
+
     payload = {
         "chat_id": chat_id,
         "text": message,
         "parse_mode": "Markdown",
-        "reply_markup": build_approval_keyboard(approval_id)
+        "reply_markup": build_approval_keyboard(approval_id),
     }
-    
+
     async with httpx.AsyncClient() as client:
         response = await client.post(telegram_api_url, json=payload)
         response.raise_for_status()
         return response.json()
 
 
-async def answer_callback_query(callback_query_id: str, text: Optional[str] = None) -> dict:
+async def answer_callback_query(
+    callback_query_id: str, text: str | None = None
+) -> dict:
     """
     Answer callback query to remove loading state from inline keyboard button.
 
@@ -314,12 +311,14 @@ async def answer_callback_query(callback_query_id: str, text: Optional[str] = No
     Returns:
         dict: Response from Telegram API
     """
-    telegram_api_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/answerCallbackQuery"
-    
+    telegram_api_url = (
+        f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/answerCallbackQuery"
+    )
+
     payload = {"callback_query_id": callback_query_id}
     if text:
         payload["text"] = text
-    
+
     async with httpx.AsyncClient() as client:
         response = await client.post(telegram_api_url, json=payload)
         response.raise_for_status()

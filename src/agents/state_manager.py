@@ -1,14 +1,10 @@
-"""State manager for handling RunState persistence in Redis for human-in-the-loop approvals."""
-
 import json
-import time
 import logging
+import time
 
 from agents import RunState
-
-from src.agents.user_context import UserContext
-from src.utils.redis_client import redis_client
 from src.agents.main_agent import weather_agent
+from src.utils.redis_client import redis_client
 
 logger = logging.getLogger(__name__)
 
