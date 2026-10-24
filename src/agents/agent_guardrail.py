@@ -15,7 +15,7 @@ from src.config import OPENAI_API_KEY, OPENAI_MODEL
 
 
 class WeatherOutput(BaseModel):
-    is_weather: bool = Field(
+    is_okay: bool = Field(
         description="Whether the user is asking about dangerous or harmful content."
     )
     reasoning: str = Field(description="Reasoning about the user's intent")
@@ -44,5 +44,5 @@ async def weather_guardrail(
 
     return GuardrailFunctionOutput(
         output_info=result.final_output,
-        tripwire_triggered=result.final_output.is_weather,
+        tripwire_triggered=not result.final_output.is_okay,
     )
